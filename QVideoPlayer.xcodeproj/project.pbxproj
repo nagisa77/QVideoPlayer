@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DD070E062B294332002C36E5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD070E052B294332002C36E5 /* main.cpp */; };
+		DD070E182B294962002C36E5 /* libavcodec.60.3.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD070E172B294962002C36E5 /* libavcodec.60.3.100.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		DD070E022B294332002C36E5 /* QVideoPlayer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QVideoPlayer; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD070E052B294332002C36E5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		DD070E152B294879002C36E5 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavcodec.a; sourceTree = "<group>"; };
+		DD070E172B294962002C36E5 /* libavcodec.60.3.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.60.3.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavcodec.60.3.100.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD070E182B294962002C36E5 /* libavcodec.60.3.100.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +47,7 @@
 			children = (
 				DD070E042B294332002C36E5 /* QVideoPlayer */,
 				DD070E032B294332002C36E5 /* Products */,
+				DD070E0C2B294559002C36E5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,6 +65,15 @@
 				DD070E052B294332002C36E5 /* main.cpp */,
 			);
 			path = QVideoPlayer;
+			sourceTree = "<group>";
+		};
+		DD070E0C2B294559002C36E5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DD070E172B294962002C36E5 /* libavcodec.60.3.100.dylib */,
+				DD070E152B294879002C36E5 /* libavcodec.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,6 +192,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/homebrew/Cellar/ffmpeg/6.0_1/include;
+				LIBRARY_SEARCH_PATHS = /opt/homebrew/Cellar/ffmpeg/6.0_1/lib;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -233,6 +249,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/homebrew/Cellar/ffmpeg/6.0_1/include;
+				LIBRARY_SEARCH_PATHS = /opt/homebrew/Cellar/ffmpeg/6.0_1/lib;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
