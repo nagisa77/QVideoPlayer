@@ -9,6 +9,15 @@
 /* Begin PBXBuildFile section */
 		6B9B85992B2A991900DF76DA /* libavcodec.60.3.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B9B85972B2A991900DF76DA /* libavcodec.60.3.100.dylib */; };
 		DD070E062B294332002C36E5 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = DD070E052B294332002C36E5 /* main.c */; };
+		DD080D6A2B2B4DD80096133D /* libavcodec.60.3.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D622B2B4DD80096133D /* libavcodec.60.3.100.dylib */; };
+		DD080D6B2B2B4DD80096133D /* libavformat.60.3.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D632B2B4DD80096133D /* libavformat.60.3.100.dylib */; };
+		DD080D6C2B2B4DD80096133D /* libswscale.7.1.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D642B2B4DD80096133D /* libswscale.7.1.100.dylib */; };
+		DD080D6D2B2B4DD80096133D /* libavdevice.60.1.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D652B2B4DD80096133D /* libavdevice.60.1.100.dylib */; };
+		DD080D6E2B2B4DD80096133D /* libavutil.58.2.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D662B2B4DD80096133D /* libavutil.58.2.100.dylib */; };
+		DD080D6F2B2B4DD80096133D /* libavfilter.9.3.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D672B2B4DD80096133D /* libavfilter.9.3.100.dylib */; };
+		DD080D702B2B4DD80096133D /* libpostproc.57.1.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D682B2B4DD80096133D /* libpostproc.57.1.100.dylib */; };
+		DD080D712B2B4DD80096133D /* libswresample.4.10.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D692B2B4DD80096133D /* libswresample.4.10.100.dylib */; };
+		DD080D742B2B595B0096133D /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD080D732B2B595B0096133D /* libpng16.16.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +36,15 @@
 		6B9B85972B2A991900DF76DA /* libavcodec.60.3.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.60.3.100.dylib; path = ../../../../usr/local/Cellar/ffmpeg/6.0/lib/libavcodec.60.3.100.dylib; sourceTree = "<group>"; };
 		DD070E022B294332002C36E5 /* QVideoPlayer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QVideoPlayer; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD070E052B294332002C36E5 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		DD080D622B2B4DD80096133D /* libavcodec.60.3.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.60.3.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavcodec.60.3.100.dylib; sourceTree = "<group>"; };
+		DD080D632B2B4DD80096133D /* libavformat.60.3.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.60.3.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavformat.60.3.100.dylib; sourceTree = "<group>"; };
+		DD080D642B2B4DD80096133D /* libswscale.7.1.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.7.1.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libswscale.7.1.100.dylib; sourceTree = "<group>"; };
+		DD080D652B2B4DD80096133D /* libavdevice.60.1.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavdevice.60.1.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavdevice.60.1.100.dylib; sourceTree = "<group>"; };
+		DD080D662B2B4DD80096133D /* libavutil.58.2.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.58.2.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavutil.58.2.100.dylib; sourceTree = "<group>"; };
+		DD080D672B2B4DD80096133D /* libavfilter.9.3.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavfilter.9.3.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libavfilter.9.3.100.dylib; sourceTree = "<group>"; };
+		DD080D682B2B4DD80096133D /* libpostproc.57.1.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpostproc.57.1.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libpostproc.57.1.100.dylib; sourceTree = "<group>"; };
+		DD080D692B2B4DD80096133D /* libswresample.4.10.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswresample.4.10.100.dylib; path = ../../../../opt/homebrew/Cellar/ffmpeg/6.0_1/lib/libswresample.4.10.100.dylib; sourceTree = "<group>"; };
+		DD080D732B2B595B0096133D /* libpng16.16.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.dylib; path = ../../../../opt/homebrew/Cellar/libpng/1.6.40/lib/libpng16.16.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +52,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD080D742B2B595B0096133D /* libpng16.16.dylib in Frameworks */,
+				DD080D6A2B2B4DD80096133D /* libavcodec.60.3.100.dylib in Frameworks */,
+				DD080D6B2B2B4DD80096133D /* libavformat.60.3.100.dylib in Frameworks */,
+				DD080D6C2B2B4DD80096133D /* libswscale.7.1.100.dylib in Frameworks */,
+				DD080D6D2B2B4DD80096133D /* libavdevice.60.1.100.dylib in Frameworks */,
+				DD080D6E2B2B4DD80096133D /* libavutil.58.2.100.dylib in Frameworks */,
+				DD080D6F2B2B4DD80096133D /* libavfilter.9.3.100.dylib in Frameworks */,
+				DD080D702B2B4DD80096133D /* libpostproc.57.1.100.dylib in Frameworks */,
+				DD080D712B2B4DD80096133D /* libswresample.4.10.100.dylib in Frameworks */,
 				6B9B85992B2A991900DF76DA /* libavcodec.60.3.100.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,6 +71,15 @@
 		6B9B85962B2A991800DF76DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD080D732B2B595B0096133D /* libpng16.16.dylib */,
+				DD080D622B2B4DD80096133D /* libavcodec.60.3.100.dylib */,
+				DD080D652B2B4DD80096133D /* libavdevice.60.1.100.dylib */,
+				DD080D672B2B4DD80096133D /* libavfilter.9.3.100.dylib */,
+				DD080D632B2B4DD80096133D /* libavformat.60.3.100.dylib */,
+				DD080D662B2B4DD80096133D /* libavutil.58.2.100.dylib */,
+				DD080D682B2B4DD80096133D /* libpostproc.57.1.100.dylib */,
+				DD080D692B2B4DD80096133D /* libswresample.4.10.100.dylib */,
+				DD080D642B2B4DD80096133D /* libswscale.7.1.100.dylib */,
 				6B9B85972B2A991900DF76DA /* libavcodec.60.3.100.dylib */,
 			);
 			name = Frameworks;
@@ -190,8 +226,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/6.0/include;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/6.0/lib;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/Cellar/ffmpeg/6.0/include,
+					/opt/homebrew/Cellar/ffmpeg/6.0_1/include,
+					/opt/homebrew/Cellar/libpng/1.6.40/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/ffmpeg/6.0/lib,
+					/opt/homebrew/Cellar/ffmpeg/6.0_1/lib,
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -247,8 +290,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/6.0/include;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/ffmpeg/6.0/lib;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/Cellar/ffmpeg/6.0/include,
+					/opt/homebrew/Cellar/ffmpeg/6.0_1/include,
+					/opt/homebrew/Cellar/libpng/1.6.40/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/ffmpeg/6.0/lib,
+					/opt/homebrew/Cellar/ffmpeg/6.0_1/lib,
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -261,6 +311,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/libpng/1.6.40/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -269,6 +323,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/libpng/1.6.40/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
