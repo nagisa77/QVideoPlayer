@@ -1,9 +1,12 @@
 //
-//  main.c
+//  video_codec_impl.c
 //  QVideoPlayer
 //
-//  Created by jt on 2023/12/13.
+//  Created by jt on 2023/12/18.
 //
+
+#include "video_codec_impl.h"
+
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/imgutils.h>
@@ -57,7 +60,7 @@ int save_frame_to_png_origin(const char *filename, AVFrame *frame) {
 
   png_set_rows(png_ptr, info_ptr, row_pointers);
   png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
-  
+
   // 释放 row_pointers
   free(row_pointers);
 
@@ -100,13 +103,7 @@ int save_frame_to_png(const char *filename, AVFrame *frame) {
   return 0;
 }
 
-int main(int argc, const char *argv[]) {
-  if (argc <= 1) {
-    return -1;
-  }
-
-  const char *video_path = argv[1];
-
+int codec(const char *video_path, int* stop_flag) {
   AVFormatContext *pFormatCtx = NULL;
   if (avformat_open_input(&pFormatCtx, video_path, NULL, NULL) != 0) {
     printf("avformat_open_input error\n");
@@ -150,7 +147,7 @@ int main(int argc, const char *argv[]) {
   gettimeofday(&start, NULL);
   uint64_t frameCount = 0;
 
-  while (av_read_frame(pFormatCtx, &pkt) >= 0) {
+  while (av_read_frame(pFormatCtx, &pkt) >= 0 && !*stop_flag) {
     if (pkt.stream_index == video_stream_index) {
       if (avcodec_send_packet(pCodecCtx, &pkt)) {
         int ret = avcodec_receive_frame(pCodecCtx, frame);
@@ -185,4 +182,6 @@ int main(int argc, const char *argv[]) {
 
   // 释放AVFormatContext
   avformat_close_input(&pFormatCtx);
+  
+  return 0; 
 }
