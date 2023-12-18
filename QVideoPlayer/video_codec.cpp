@@ -7,8 +7,10 @@
 
 #include "video_codec.hpp"
 #include "concurrentqueue.h"
-#include "video_codec_impl.h"
 #include <spdlog/spdlog.h>
+extern "C" {
+#include "video_codec_impl.h"
+}
 
 VideoCodec::VideoCodec() {}
 
@@ -40,6 +42,6 @@ void VideoCodec::StopCodec() {
 }
 
 void VideoCodec::Codec(const std::string& file_path) {
-  codec(file_path.c_str(), stop_requested_);
+  codec(file_path.c_str(), &stop_requested_);
 }
 

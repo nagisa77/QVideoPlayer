@@ -103,7 +103,7 @@ int save_frame_to_png(const char *filename, AVFrame *frame) {
   return 0;
 }
 
-int codec(const char *video_path, int* stop_flag) {
+int codec(const char* video_path, int* stop_flag) {
   AVFormatContext *pFormatCtx = NULL;
   if (avformat_open_input(&pFormatCtx, video_path, NULL, NULL) != 0) {
     printf("avformat_open_input error\n");
