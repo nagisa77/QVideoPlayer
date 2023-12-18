@@ -7,16 +7,79 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "53F1B140-B2D0-49F8-B4F5-1468FBB826D8"
-            shouldBeEnabled = "No"
+            uuid = "12FCA0C0-E54C-4C76-96FA-2A2AF427A50D"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "QVideoPlayer/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "main(argc, argv)"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "save_frame_to_png(filename, frame)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "12FCA0C0-E54C-4C76-96FA-2A2AF427A50D - 89ee7da708101bad"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "save_frame_to_png"
+                  moduleName = "QVideoPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chenjiating/Desktop/QVideoPlayer/QVideoPlayer/main.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "72"
+                  endingLineNumber = "72"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "12FCA0C0-E54C-4C76-96FA-2A2AF427A50D - 89ee7da708101b6f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "save_frame_to_png"
+                  moduleName = "QVideoPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chenjiating/Desktop/QVideoPlayer/QVideoPlayer/main.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "12FCA0C0-E54C-4C76-96FA-2A2AF427A50D - 89ee7da7081014d1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "save_frame_to_png"
+                  moduleName = "QVideoPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chenjiating/Desktop/QVideoPlayer/QVideoPlayer/main.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AF8BE9E9-2D42-4BAC-A6A0-ED3224CE61C7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "QVideoPlayer/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "save_frame_to_png(filename, frame)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
