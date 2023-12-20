@@ -7,9 +7,11 @@
 
 #ifndef video_codec_impl_h
 #define video_codec_impl_h
-
+#include <libavcodec/avcodec.h>
 #include <stdio.h>
 
-int codec(const char* video_path, int* stop_flag);
+typedef void (*FrameCallback)(AVFrame*);
+
+int codec(const char* video_path, int* stop_flag, FrameCallback cb);
 
 #endif /* video_codec_impl_h */

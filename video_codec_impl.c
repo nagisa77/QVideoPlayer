@@ -103,7 +103,9 @@ int save_frame_to_png(const char *filename, AVFrame *frame) {
   return 0;
 }
 
-int codec(const char* video_path, int* stop_flag) {
+void on_frame(AVFrame *frame);
+
+int codec(const char *video_path, int *stop_flag, FrameCallback cb) {
   AVFormatContext *pFormatCtx = NULL;
   if (avformat_open_input(&pFormatCtx, video_path, NULL, NULL) != 0) {
     printf("avformat_open_input error\n");
@@ -155,17 +157,46 @@ int codec(const char* video_path, int* stop_flag) {
           int width = frame->width;
           int height = frame->height;
           if (width <= 0 || height <= 0) {
-            // printf("无效的帧大小：width=%d, height=%d\n", width, height);
+            //            printf("无效的帧大小：width=%d, height=%d\n", width,
+            //            height);
             continue;
           }
-          const char *save_dir = "/Users/chenjiating/Downloads/frames";
-          char filename[256];
-          memset(filename, 0, sizeof(filename));
-          sprintf(filename, "%s/frame%d.png", save_dir, idx++);
+          //          const char *save_dir =
+          //          "/Users/chenjiating/Downloads/frames"; char filename[256];
+          //          memset(filename, 0, sizeof(filename));
+          //          sprintf(filename, "%s/frame%d.png", save_dir, idx++);
 
           printf("width=%d, height=%d, format=%d\n", frame->width,
                  frame->height, frame->format);
-          save_frame_to_png(filename, frame);
+          //          save_frame_to_png(filename, frame);
+
+          AVFrame *frame_to_cb = av_frame_alloc();
+
+          // 复制帧属性
+          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+            av_frame_free(&frame_to_cb);
+            continue;
+          }
+
+          frame_to_cb->format = AV_PIX_FMT_YUV420P;  // 设置为适当的像素格式
+          frame_to_cb->width = frame->width;         // 设置宽度
+          frame_to_cb->height = frame->height;  // 设置高度
+
+          int r = av_frame_get_buffer(frame_to_cb, 32);
+
+          // 复制帧数据
+          if (av_frame_copy(frame_to_cb, frame) < 0) {
+            av_frame_free(&frame_to_cb);
+            continue;
+          }
+
+          // 复制帧属性
+          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+            av_frame_free(&frame_to_cb);
+            continue;
+          }
+
+          cb(frame_to_cb);  // call back!
 
           frameCount++;
         }
@@ -180,8 +211,10 @@ int codec(const char* video_path, int* stop_flag) {
   printf("Decoded frames: %llu\n", frameCount);
   printf("Elapsed time: %.2f seconds\n", elapsedTime);
 
-  // 释放AVFormatContext
+  // free
+  avcodec_free_context(&pCodecCtx);
   avformat_close_input(&pFormatCtx);
-  
-  return 0; 
+  av_frame_free(&frame);
+
+  return 0;
 }

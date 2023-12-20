@@ -6,10 +6,19 @@
 //
 
 #include "video_codec.hpp"
-#include "concurrentqueue.h"
+
 #include <spdlog/spdlog.h>
+
+#include <functional>
+
+#include "concurrentqueue.h"
 extern "C" {
 #include "video_codec_impl.h"
+}
+
+static void StaticFrameCallback(AVFrame* frame) {
+  VideoCodec& codec = VideoCodec::getInstance();
+  codec.OnFrame(frame);
 }
 
 VideoCodec::VideoCodec() {}
@@ -41,8 +50,9 @@ void VideoCodec::StopCodec() {
   spdlog::info("StopCodec success");
 }
 
-void VideoCodec::Codec(const std::string& file_path) {
-  spdlog::info("start Codec"); 
-  codec(file_path.c_str(), &stop_requested_);
-}
+void VideoCodec::OnFrame(AVFrame* frame) { listener_->OnVideoFrame(frame); }
 
+void VideoCodec::Codec(const std::string& file_path) {
+  spdlog::info("start Codec");
+  codec(file_path.c_str(), &stop_requested_, StaticFrameCallback);
+}

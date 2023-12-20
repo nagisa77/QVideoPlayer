@@ -29,8 +29,12 @@ find_package(PNG REQUIRED)
 add_executable(VideoPlayer
     main.cc
     video_codec.cpp
+    video_codec.hpp  
     video_codec_impl.c
+    video_codec_impl.h  
     video_player_view.cpp
+    video_player_view.hpp  
+    concurrentqueue.h
 )
 
 target_include_directories(VideoPlayer PRIVATE ${FFMPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIRS})
