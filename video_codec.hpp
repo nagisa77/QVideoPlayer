@@ -13,6 +13,7 @@
 #include <string>
 
 class VideoCodecListener {
+public:
   virtual void OnVideoFrame() = 0;
 };
 

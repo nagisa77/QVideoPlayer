@@ -42,6 +42,7 @@ void VideoCodec::StopCodec() {
 }
 
 void VideoCodec::Codec(const std::string& file_path) {
+  spdlog::info("start Codec"); 
   codec(file_path.c_str(), &stop_requested_);
 }
 
