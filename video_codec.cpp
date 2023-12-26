@@ -12,11 +12,11 @@
 
 #include <functional>
 
-#include "concurrentqueue.h"
+#include "blocking_queue.h"
 
 extern "C" {
 #include <libavformat/avformat.h>
-
+#include <libavutil/time.h>
 #include "video_codec_impl.h"
 }
 
@@ -53,6 +53,11 @@ void VideoCodec::StopCodec() {
   if (codec_thread_.joinable()) {
     codec_thread_.join();
   }
+  
+  std::queue<AVFrame*> empty_q;
+  empty_q.push(nullptr);
+  fq_.replace(empty_q);
+  
   if (getting_frame_thread_.joinable()) {
     getting_frame_thread_.join();
   }
@@ -60,7 +65,7 @@ void VideoCodec::StopCodec() {
 }
 
 void VideoCodec::OnFrame(AVFrame* frame) {
-  fq_.enqueue(frame);  // 将 frame 放入队列
+  fq_.push(frame);  // 将 frame 放入队列
 }
 
 void VideoCodec::Codec(const std::string& file_path) {
@@ -175,51 +180,53 @@ void VideoCodec::ProcessFrameFromQueue() {
   while (!stream_time_base_ready_) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-
-  while (true) {
-    fq_.try_dequeue(frame);
-    if (frame && frame->pts != AV_NOPTS_VALUE) {
+  
+  while ((frame = fq_.pop())) {
+    if (frame->pts != AV_NOPTS_VALUE) {
       double time = av_q2d(stream_time_base_) * frame->pts;
       if (frame->pts == 0) {
         listener_->OnVideoFrame(frame);
+        av_frame_free(&frame);  // 释放帧
+        
         continue;
       }
-      spdlog::info("Frame time: {}", time);
-      spdlog::info("Original PTS: {}", frame->pts);
-      spdlog::info("Time base: num = {}, den = {}", stream_time_base_.num,
-                   stream_time_base_.den);
-
+//      spdlog::info("Frame time: {}", time);
+//      spdlog::info("Original PTS: {}", frame->pts);
+//      spdlog::info("Time base: num = {}, den = {}", stream_time_base_.num,
+//                   stream_time_base_.den);
+      
       WaitForFrame(time);
-
+      
       listener_->OnVideoFrame(frame);
     }
     av_frame_free(&frame);  // 释放帧
+    frame = nullptr; // 设置为 nullptr 避免重复释放
   }
+  
+  spdlog::info("decode ended");
 }
 
 void VideoCodec::WaitForFrame(double frame_time) {
-  using namespace std::chrono;
+    // 将帧时间转换为微秒
+    int64_t frame_time_us = static_cast<int64_t>(frame_time * 1000000.0);
 
-  // 获取当前时间
-  auto now = steady_clock::now();
+    // 检查是否是第一帧
+    if (is_first_frame_) {
+        first_frame_time_us_ = av_gettime();
+        is_first_frame_ = false;
+    }
 
-  // 检查是否是第一帧
-  if (is_first_frame_) {
-    last_frame_time_ = now;
-    is_first_frame_ = false;
-  }
+    // 获取当前时间
+    int64_t now_us = av_gettime();
+    frame_time_us += first_frame_time_us_;
 
-  // 计算下一帧的预期播放时间
-  auto next_frame_time =
-      last_frame_time_ +
-      duration_cast<steady_clock::duration>(duration<double>(frame_time));
-
-  // 如果当前时间早于预期播放时间，则等待
-  if (now < next_frame_time) {
-    std::this_thread::sleep_for((next_frame_time - now) / 1000);
-  }
-
-  // 更新上一帧的播放时间
-  last_frame_time_ =
-      now + duration_cast<steady_clock::duration>(duration<double>(frame_time));
+    // 如果当前时间早于预期播放时间，则等待
+    if (now_us < frame_time_us) {
+        int64_t wait_time_us = frame_time_us - now_us;
+//        spdlog::info("now: {}, frame_time_us: {}, wait for {} us",
+//                     wait_time_us,
+//                     frame_time_us,
+//                     wait_time_us);
+        std::this_thread::sleep_for(std::chrono::microseconds(wait_time_us));
+    }
 }

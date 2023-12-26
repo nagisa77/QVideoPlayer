@@ -16,7 +16,7 @@ extern "C" {
 #include <string>
 #include <thread>
 
-#include "concurrentqueue.h"
+#include "blocking_queue.h"
 
 class VideoCodecListener {
  public:
@@ -52,9 +52,9 @@ class VideoCodec {
   int stop_requested_ = 0;
   std::thread codec_thread_;
   std::thread getting_frame_thread_;
-  moodycamel::ConcurrentQueue<AVFrame*> fq_;
+  BlockingQueue<AVFrame*> fq_;
   bool is_first_frame_ = true;
-  std::chrono::steady_clock::time_point last_frame_time_;
+  int64_t first_frame_time_us_;
   AVRational stream_time_base_;
   bool stream_time_base_ready_ = false;
 };

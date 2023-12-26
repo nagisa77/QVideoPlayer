@@ -73,8 +73,6 @@ VideoPlayerView::~VideoPlayerView() {
 }
 
 void VideoPlayerView::OnVideoFrame(AVFrame* frame) {
-  spdlog::info("OnVideoFrame");
-
   QImage image = convertToQImage(frame);  // 需要实现这个函数
   emit frameReady(image);
 }
@@ -88,18 +86,11 @@ void VideoPlayerView::renderFrame(QImage frame) {
 void VideoPlayerView::paintEvent(QPaintEvent* event) {
   QPainter painter(this);
   if (!current_frame_.isNull()) {
-    // 获取窗口的当前大小
     QSize windowSize = this->size();
-
-    // 缩放图像以填充窗口，保持图像的纵横比
     QImage scaledFrame = current_frame_.scaled(windowSize, Qt::KeepAspectRatio,
                                                Qt::SmoothTransformation);
-
-    // 计算图像绘制的起始位置，以便图像居中显示
     int startX = (windowSize.width() - scaledFrame.width()) / 2;
     int startY = (windowSize.height() - scaledFrame.height()) / 2;
-
-    // 绘制图像
     painter.drawImage(startX, startY, scaledFrame);
   }
 }

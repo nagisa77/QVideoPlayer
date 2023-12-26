@@ -26,15 +26,19 @@ find_library(SWSCALE_LIBRARY swscale)
 # 找到 libpng 库
 find_package(PNG REQUIRED)
 
+# 找到 boost 库
+# 在 find_package 中添加 thread 组件
+find_package(Boost REQUIRED COMPONENTS thread)
+
 add_executable(VideoPlayer
     main.cc
     video_codec.cpp
     video_codec.hpp  
     video_codec_impl.c
-    video_codec_impl.h  
+    video_codec_impl.h
     video_player_view.cpp
     video_player_view.hpp  
-    concurrentqueue.h
+    blocking_queue.h
 )
 
 target_include_directories(VideoPlayer PRIVATE ${FFMPEG_INCLUDE_DIR} ${PNG_INCLUDE_DIRS})
@@ -42,6 +46,7 @@ target_link_libraries(VideoPlayer
     Qt6::Core
     Qt6::Widgets
     spdlog::spdlog
+    ${Boost_LIBRARIES}
     ${AVFORMAT_LIBRARY}
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}
