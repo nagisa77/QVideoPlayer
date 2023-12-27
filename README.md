@@ -9,5 +9,5 @@
 
 # run
 ```
-./VideoPlayer path_to_video_file
+> ./VideoPlayer path_to_video_file
 ```
