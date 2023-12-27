@@ -26,6 +26,10 @@ find_library(AVFORMAT_LIBRARY avformat)
 find_library(AVCODEC_LIBRARY avcodec)
 find_library(AVUTIL_LIBRARY avutil)
 find_library(SWSCALE_LIBRARY swscale)
+find_library(SWRESAMPLE_LIBRARY swresample)
+
+# 找到 SDL2 库
+find_package(SDL2 REQUIRED)
 
 # 找到 libpng 库
 find_package(PNG REQUIRED)
@@ -50,7 +54,9 @@ target_link_libraries(VideoPlayer
     Qt6::Core
     Qt6::Widgets
     spdlog::spdlog
+    SDL2::SDL2
     ${Boost_LIBRARIES}
+    ${SWRESAMPLE_LIBRARY}
     ${AVFORMAT_LIBRARY}
     ${AVCODEC_LIBRARY}
     ${AVUTIL_LIBRARY}

@@ -25,6 +25,19 @@ class BlockingQueue {
     condition_.notify_one();  // 通知等待的 pop
   }
 
+  std::optional<T> popOrEmpty() {
+    boost::mutex::scoped_lock lock(mutex_);
+
+    if (queue_.empty()) {
+      return {};
+    }
+
+    T value = queue_.front();
+    queue_.pop();
+
+    return value;
+  }
+
   T pop() {
     boost::mutex::scoped_lock lock(mutex_);
     while (queue_.empty()) {
