@@ -56,7 +56,9 @@ void VideoCodec::StopCodec() {
   if (codec_thread_.joinable()) {
     codec_thread_.join();
   }
-
+  
+  stream_time_base_ready_ = true; 
+  
   std::queue<AVFrame*> empty_q;
   empty_q.push(nullptr);
   fq_.replace(empty_q);
@@ -87,12 +89,12 @@ void VideoCodec::Codec(const std::string& file_path) {
   AVFormatContext* pFormatCtx = NULL;
   if (avformat_open_input(&pFormatCtx, video_path, NULL, NULL) != 0) {
     printf("avformat_open_input error\n");
-    return -1;
+    return;
   }
 
   if (avformat_find_stream_info(pFormatCtx, NULL) < 0) {
     printf("avformat_find_stream_info error\n");
-    return -1;
+    return;
   }
 
   int video_stream_index = -1;
@@ -105,6 +107,12 @@ void VideoCodec::Codec(const std::string& file_path) {
     if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
       audio_stream_index = i;
     }
+  }
+  
+  if (video_stream_index == -1) {
+    spdlog::error("no video found");
+    listener_->OnMediaError();
+    return;
   }
 
   stream_time_base_ = pFormatCtx->streams[video_stream_index]->time_base;
@@ -125,12 +133,12 @@ void VideoCodec::Codec(const std::string& file_path) {
 
   if (avcodec_open2(pCodecCtx, codec, NULL) < 0) {
     fprintf(stderr, "Could not open codec\n");
-    return -1;
+    return; 
   }
 
   if (avcodec_open2(pAudioCodecCtx, audio_codec, NULL) < 0) {
     fprintf(stderr, "Could not open audio codec\n");
-    return -1;
+    return;
   }
 
   AVPacket pkt;
@@ -220,8 +228,6 @@ void VideoCodec::Codec(const std::string& file_path) {
   avcodec_free_context(&pCodecCtx);
   avformat_close_input(&pFormatCtx);
   av_frame_free(&frame);
-
-  return 0;
 }
 
 void VideoCodec::ProcessFrameFromQueue() {

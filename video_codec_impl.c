@@ -113,11 +113,6 @@ int codec(const char *video_path, int *stop_flag, FrameCallback cb) {
     if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
       video_stream_index = i;
     }
-    //
-    //    if (pFormatCtx->streams[i]->codecpar->codec_type ==
-    //    AVMEDIA_TYPE_AUDIO) {
-    //      audio_stream_index = i;
-    //    }
   }
 
   AVCodec *codec = avcodec_find_decoder(
@@ -147,18 +142,12 @@ int codec(const char *video_path, int *stop_flag, FrameCallback cb) {
           int width = frame->width;
           int height = frame->height;
           if (width <= 0 || height <= 0) {
-            //            printf("无效的帧大小：width=%d, height=%d\n", width,
-            //            height);
             continue;
           }
-          //          const char *save_dir =
-          //          "/Users/chenjiating/Downloads/frames"; char filename[256];
-          //          memset(filename, 0, sizeof(filename));
-          //          sprintf(filename, "%s/frame%d.png", save_dir, idx++);
+
 
           printf("width=%d, height=%d, format=%d\n", frame->width,
                  frame->height, frame->format);
-          //          save_frame_to_png(filename, frame);
 
           AVFrame *frame_to_cb = av_frame_alloc();
 

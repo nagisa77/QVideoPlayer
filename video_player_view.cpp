@@ -178,7 +178,7 @@ static QImage convertToQImage(AVFrame* frame) {
   return img;
 }
 
-VideoPlayerView::VideoPlayerView() : QWidget(nullptr), audio_frames_(1000) {
+VideoPlayerView::VideoPlayerView(const char* path) : QWidget(nullptr), audio_frames_(1000) {
   spdlog::info("VideoPlayerView");
 
   connect(this, &VideoPlayerView::frameReady, this,
@@ -188,8 +188,7 @@ VideoPlayerView::VideoPlayerView() : QWidget(nullptr), audio_frames_(1000) {
           &VideoPlayerView::prepareAudioFrame);
 
   VideoCodec::getInstance().Register(this);
-  VideoCodec::getInstance().StartCodec(
-      "/Users/chenjiating/Downloads/output.mp4");
+  VideoCodec::getInstance().StartCodec(path);
 }
 
 VideoPlayerView::~VideoPlayerView() {
@@ -206,6 +205,10 @@ void VideoPlayerView::OnVideoFrame(AVFrame* frame) {
 
 void VideoPlayerView::OnAudioFrame(AVFrame* frame) {
   emit audioFrameReady(frame);
+}
+
+void VideoPlayerView::OnMediaError() {
+  close(); 
 }
 
 void VideoPlayerView::prepareAudioFrame(AVFrame* frame) {

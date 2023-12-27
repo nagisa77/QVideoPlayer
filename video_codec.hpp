@@ -22,6 +22,7 @@ class VideoCodecListener {
  public:
   virtual void OnVideoFrame(AVFrame* frame) = 0;
   virtual void OnAudioFrame(AVFrame* frame) = 0;
+  virtual void OnMediaError() = 0;
 };
 
 class VideoCodec {

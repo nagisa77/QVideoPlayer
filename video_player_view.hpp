@@ -23,7 +23,7 @@ class VideoPlayerView : public QWidget, public VideoCodecListener {
   Q_OBJECT
 
  public:
-  VideoPlayerView();
+  VideoPlayerView(const char* path);
   ~VideoPlayerView();
 
   void renderFrame(QImage frame);
@@ -39,6 +39,7 @@ class VideoPlayerView : public QWidget, public VideoCodecListener {
  private:
   void OnVideoFrame(AVFrame* frame) override;
   void OnAudioFrame(AVFrame* frame) override;
+  void OnMediaError() override;
 
  private:
   QImage current_frame_;
