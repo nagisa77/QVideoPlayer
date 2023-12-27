@@ -18,6 +18,7 @@ extern "C" {
 #include <spdlog/spdlog.h>
 
 #include <QPainter>
+#include <QKeyEvent>
 
 static SwsContext* sws_ctx = nullptr;
 static SwrContext* swr_ctx = nullptr;
@@ -99,6 +100,16 @@ void VideoPlayerView::AudioCallback(void* userdata, Uint8* stream, int len) {
   av_freep(&outBuffer[0]);
 }
 
+void VideoPlayerView::keyPressEvent(QKeyEvent *event) {
+  if (event->key() == Qt::Key_Space) {
+    spdlog::info("Space key pressed");
+    pause_ = !pause_;
+    VideoCodec::getInstance().PauseCodec(pause_);
+  } else {
+    QWidget::keyPressEvent(event);
+  }
+}
+
 bool VideoPlayerView::InitSdlAudio(AVFramePtr frame) {
   SDL_AudioSpec wanted_spec;
 
@@ -176,14 +187,11 @@ static QImage convertToQImage(AVFramePtr frame) {
   return img;
 }
 
-VideoPlayerView::VideoPlayerView(const char* path) : QWidget(nullptr), audio_frames_(100) {
+VideoPlayerView::VideoPlayerView(const char* path) : QWidget(nullptr), audio_frames_(1) {
   spdlog::info("VideoPlayerView");
 
   connect(this, &VideoPlayerView::frameReady, this,
           &VideoPlayerView::renderFrame);
-
-  connect(this, &VideoPlayerView::audioFrameReady, this,
-          &VideoPlayerView::prepareAudioFrame);
 
   VideoCodec::getInstance().Register(this);
   VideoCodec::getInstance().StartCodec(path);
@@ -202,18 +210,14 @@ void VideoPlayerView::OnVideoFrame(AVFramePtr frame) {
 }
 
 void VideoPlayerView::OnAudioFrame(AVFramePtr frame) {
-  emit audioFrameReady(frame);
-}
-
-void VideoPlayerView::OnMediaError() {
-  close(); 
-}
-
-void VideoPlayerView::prepareAudioFrame(AVFramePtr frame) {
   if (first_audio_frame_ && InitSdlAudio(frame)) {
     first_audio_frame_ = false;
   }
   audio_frames_.push(frame);
+}
+
+void VideoPlayerView::OnMediaError() {
+  close(); 
 }
 
 void VideoPlayerView::renderFrame(QImage frame) {

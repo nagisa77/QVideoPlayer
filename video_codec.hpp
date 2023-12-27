@@ -53,6 +53,7 @@ class VideoCodec {
   void UnRegister(VideoCodecListener* listener);
   void StartCodec(const std::string& file_path);
   void StopCodec();
+  void PauseCodec(bool pause);
   void Codec(const std::string& file_path);
   void ProcessFrameFromQueue();
   void ProcessAudioFrameFromQueue();

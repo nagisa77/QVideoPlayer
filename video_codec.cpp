@@ -80,6 +80,18 @@ void VideoCodec::OnAudioFrame(AVFramePtr frame) {
   afq_.push(frame);
 }
 
+void VideoCodec::PauseCodec(bool pause) {
+  if (pause) {
+    fq_.lock();
+    afq_.lock();
+  } else {
+    fq_.clear();
+    afq_.clear();
+    fq_.unlock();
+    afq_.unlock();
+  }
+}
+
 void VideoCodec::Codec(const std::string& file_path) {
   spdlog::info("start Codec");
 

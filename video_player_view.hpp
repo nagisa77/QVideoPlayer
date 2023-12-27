@@ -27,7 +27,6 @@ class VideoPlayerView : public QWidget, public VideoCodecListener {
   ~VideoPlayerView();
 
   void renderFrame(QImage frame);
-  void prepareAudioFrame(AVFramePtr frame);
   void paintEvent(QPaintEvent* event) override;
   void AudioCallback(void* userdata, Uint8* stream, int len);
   bool InitSdlAudio(AVFramePtr frame);
@@ -40,12 +39,14 @@ class VideoPlayerView : public QWidget, public VideoCodecListener {
   void OnVideoFrame(AVFramePtr frame) override;
   void OnAudioFrame(AVFramePtr frame) override;
   void OnMediaError() override;
+  void keyPressEvent(QKeyEvent *event) override;
 
  private:
   QImage current_frame_;
   BlockingQueue<AVFramePtr> audio_frames_;
   bool first_audio_frame_ = true;
   SDL_AudioSpec obtained_;
+  bool pause_ = false; 
 };
 
 #endif /* video_player_view_hpp */
