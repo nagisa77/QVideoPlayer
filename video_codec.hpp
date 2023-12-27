@@ -26,7 +26,6 @@ class VideoCodecListener {
 
 class VideoCodec {
  public:
-  // 删除复制构造函数和赋值运算符
   VideoCodec(const VideoCodec&) = delete;
   VideoCodec& operator=(const VideoCodec&) = delete;
 

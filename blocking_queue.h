@@ -19,10 +19,10 @@ class BlockingQueue {
   void push(const T& value) {
     boost::mutex::scoped_lock lock(mutex_);
     while (queue_.size() >= max_length_) {
-      condition_full_.wait(lock);  // 等待队列不满
+      condition_full_.wait(lock); 
     }
     queue_.push(value);
-    condition_.notify_one();  // 通知等待的 pop
+    condition_.notify_one();
   }
 
   std::optional<T> popOrEmpty() {
@@ -46,7 +46,7 @@ class BlockingQueue {
     T value = queue_.front();
     queue_.pop();
     if (queue_.size() < max_length_) {
-      condition_full_.notify_one();  // 通知等待的 push
+      condition_full_.notify_one();
     }
     return value;
   }
@@ -64,7 +64,7 @@ class BlockingQueue {
  private:
   mutable boost::mutex mutex_;
   boost::condition_variable condition_;
-  boost::condition_variable condition_full_;  // 新增
+  boost::condition_variable condition_full_;
   std::queue<T> queue_;
   size_t max_length_;
 };

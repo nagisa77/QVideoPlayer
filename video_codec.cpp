@@ -73,11 +73,11 @@ void VideoCodec::StopCodec() {
 }
 
 void VideoCodec::OnFrame(AVFrame* frame) {
-  fq_.push(frame);  // 将 frame 放入队列
+  fq_.push(frame);
 }
 
 void VideoCodec::OnAudioFrame(AVFrame* frame) {
-  afq_.push(frame);  // 将 frame 放入队列
+  afq_.push(frame);
 }
 
 void VideoCodec::Codec(const std::string& file_path) {
@@ -147,7 +147,6 @@ void VideoCodec::Codec(const std::string& file_path) {
         if (ret == 0) {
           AVFrame* frame_to_cb = av_frame_alloc();
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             continue;
           }
@@ -162,12 +161,10 @@ void VideoCodec::Codec(const std::string& file_path) {
             continue;
           }
 
-          // 复制帧数据
           if (av_frame_copy(frame_to_cb, frame) < 0) {
             continue;
           }
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             continue;
           }
@@ -188,7 +185,6 @@ void VideoCodec::Codec(const std::string& file_path) {
 
           AVFrame* frame_to_cb = av_frame_alloc();
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             continue;
           }
@@ -200,12 +196,10 @@ void VideoCodec::Codec(const std::string& file_path) {
 
           int r = av_frame_get_buffer(frame_to_cb, 32);
 
-          // 复制帧数据
           if (av_frame_copy(frame_to_cb, frame) < 0) {
             continue;
           }
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             continue;
           }
@@ -241,7 +235,7 @@ void VideoCodec::ProcessFrameFromQueue() {
       double time = av_q2d(stream_time_base_) * frame->pts;
       if (frame->pts == 0) {
         listener_->OnVideoFrame(frame);
-        av_frame_free(&frame);  // 释放帧
+        av_frame_free(&frame);
 
         continue;
       }
@@ -249,9 +243,9 @@ void VideoCodec::ProcessFrameFromQueue() {
       WaitForFrameAudio(time);
 
       listener_->OnVideoFrame(frame);
-      av_frame_free(&frame);  // 释放帧
+      av_frame_free(&frame);
     }
-    frame = nullptr;  // 设置为 nullptr 避免重复释放
+    frame = nullptr;
   }
 
   spdlog::info("decode ended");
@@ -275,58 +269,42 @@ void VideoCodec::ProcessAudioFrameFromQueue() {
 
       listener_->OnAudioFrame(frame);
     }
-    frame = nullptr;  // 设置为 nullptr 避免重复释放
+    frame = nullptr; 
   }
 
   spdlog::info("audio decode ended");
 }
 
 void VideoCodec::WaitForFrame(double frame_time) {
-  // 将帧时间转换为微秒
   int64_t frame_time_us = static_cast<int64_t>(frame_time * 1000000.0);
 
-  // 检查是否是第一帧
   if (is_first_frame_) {
     first_frame_time_us_ = av_gettime();
     is_first_frame_ = false;
   }
 
-  // 获取当前时间
   int64_t now_us = av_gettime();
   frame_time_us += first_frame_time_us_;
 
-  // 如果当前时间早于预期播放时间，则等待
   if (now_us < frame_time_us) {
     int64_t wait_time_us = frame_time_us - now_us;
-    //        spdlog::info("now: {}, frame_time_us: {}, wait for {} us",
-    //                     wait_time_us,
-    //                     frame_time_us,
-    //                     wait_time_us);
     std::this_thread::sleep_for(std::chrono::microseconds(wait_time_us));
   }
 }
 
 void VideoCodec::WaitForFrameAudio(double frame_time) {
-  // 将帧时间转换为微秒
   int64_t frame_time_us = static_cast<int64_t>(frame_time * 1000000.0);
 
-  // 检查是否是第一帧
   if (is_first_audio_frame_) {
     first_audio_frame_time_us_ = av_gettime();
     is_first_audio_frame_ = false;
   }
 
-  // 获取当前时间
   int64_t now_us = av_gettime();
   frame_time_us += first_audio_frame_time_us_;
 
-  // 如果当前时间早于预期播放时间，则等待
   if (now_us < frame_time_us) {
     int64_t wait_time_us = frame_time_us - now_us;
-    //        spdlog::info("now: {}, frame_time_us: {}, wait for {} us",
-    //                     wait_time_us,
-    //                     frame_time_us,
-    //                     wait_time_us);
     std::this_thread::sleep_for(std::chrono::microseconds(wait_time_us));
   }
 }

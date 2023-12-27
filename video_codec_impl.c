@@ -15,13 +15,11 @@
 #include <sys/time.h>
 
 int save_frame_to_png_origin(const char *filename, AVFrame *frame) {
-  // 打开PNG文件
   FILE *fp = fopen(filename, "wb");
   if (!fp) {
     return -1;
   }
 
-  // 初始化PNG结构体
   png_structp png_ptr =
       png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr) {
@@ -29,7 +27,6 @@ int save_frame_to_png_origin(const char *filename, AVFrame *frame) {
     return -2;
   }
 
-  // 初始化PNG信息结构体
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr) {
     png_destroy_write_struct(&png_ptr, NULL);
@@ -37,21 +34,17 @@ int save_frame_to_png_origin(const char *filename, AVFrame *frame) {
     return -3;
   }
 
-  // 设置错误处理函数
   if (setjmp(png_jmpbuf(png_ptr))) {
     png_destroy_write_struct(&png_ptr, &info_ptr);
     fclose(fp);
     return -4;
   }
 
-  // 设置PNG文件头信息
   png_set_IHDR(png_ptr, info_ptr, frame->width, frame->height, 8,
                PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
                PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
-  // 写PNG文件头信息
   png_init_io(png_ptr, fp);
-  //    png_set_rows(png_ptr, info_ptr, frame->data);
   png_bytep *row_pointers =
       (png_bytep *)malloc(sizeof(png_bytep) * frame->height);
   for (int y = 0; y < frame->height; y++) {
@@ -61,13 +54,10 @@ int save_frame_to_png_origin(const char *filename, AVFrame *frame) {
   png_set_rows(png_ptr, info_ptr, row_pointers);
   png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
-  // 释放 row_pointers
   free(row_pointers);
 
-  // 清理PNG结构体
   png_destroy_write_struct(&png_ptr, &info_ptr);
 
-  // 关闭文件
   fclose(fp);
 
   return 0;
@@ -172,25 +162,22 @@ int codec(const char *video_path, int *stop_flag, FrameCallback cb) {
 
           AVFrame *frame_to_cb = av_frame_alloc();
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             av_frame_free(&frame_to_cb);
             continue;
           }
 
-          frame_to_cb->format = AV_PIX_FMT_YUV420P;  // 设置为适当的像素格式
-          frame_to_cb->width = frame->width;         // 设置宽度
-          frame_to_cb->height = frame->height;  // 设置高度
+          frame_to_cb->format = AV_PIX_FMT_YUV420P;
+          frame_to_cb->width = frame->width;
+          frame_to_cb->height = frame->height;
 
           int r = av_frame_get_buffer(frame_to_cb, 32);
 
-          // 复制帧数据
           if (av_frame_copy(frame_to_cb, frame) < 0) {
             av_frame_free(&frame_to_cb);
             continue;
           }
 
-          // 复制帧属性
           if (av_frame_copy_props(frame_to_cb, frame) < 0) {
             av_frame_free(&frame_to_cb);
             continue;
