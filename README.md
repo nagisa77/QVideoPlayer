@@ -1,84 +1,82 @@
 # QVideoPlayer
 
-## 简介
+## Introduction
 
-`QVideoPlayer` 是一个基于 Qt 和 SDL 的视频播放器，利用 FFmpeg 进行媒体处理。它结合了 Qt 的强大界面能力和 SDL 的音频处理效率，提供了流畅的视频播放体验。
+`QVideoPlayer` is a video player based on Qt and SDL, utilizing FFmpeg for media processing. It combines the powerful interface capabilities of Qt with the audio processing efficiency of SDL, offering a smooth video playback experience.
 
-## 核心功能
+## Core Features
 
-- **视频播放**：使用 FFmpeg 库解码视频流，支持多种视频格式。
-- **音频播放**：结合 SDL 库播放音频，提供同步的音视频体验。
-- **用户界面**：基于 Qt 框架，提供图形界面交互。
-- **媒体控制**：包括播放、暂停、停止等基本媒体播放控制。
+- **Video Playback**: Decodes video streams using the FFmpeg library, supporting various video formats.
+- **Audio Playback**: Integrates with the SDL library for audio playback, providing synchronized audio and video experience.
+- **User Interface**: Built on the Qt framework, offering graphical user interface interactions.
+- **Media Control**: Includes basic media playback controls such as play, pause, and stop.
 
-## 技术细节
+## Technical Details
 
-### FFmpeg 原理
+### FFmpeg Principles
 
-FFmpeg 是一个多媒体框架，用于处理音频和视频数据。在 `QVideoPlayer` 中，FFmpeg 被用来解码视频文件，提取音视频数据流。
+FFmpeg is a multimedia framework used for processing audio and video data. In `QVideoPlayer`, FFmpeg is utilized to decode video files and extract audio and video streams.
 
-- **视频解码**：通过 `avcodec_send_packet` 和 `avcodec_receive_frame` 函数，FFmpeg 将视频数据包解码成帧。
-- **音频解码**：类似地，音频流也通过 FFmpeg 解码，将音频包转换为可播放的帧。
+- **Video Decoding**: Through the `avcodec_send_packet` and `avcodec_receive_frame` functions, FFmpeg decodes video packets into frames.
+- **Audio Decoding**: Similarly, audio streams are decoded via FFmpeg, converting audio packets into playable frames.
 
-### SDL 音频处理
+### SDL Audio Processing
 
-SDL (Simple DirectMedia Layer) 是一个跨平台开发库，用于处理音频、键盘、鼠标等设备。在本项目中，SDL 被用来处理音频输出。
+SDL (Simple DirectMedia Layer) is a cross-platform development library used for handling audio, keyboard, mouse, and other devices. In this project, SDL is used to handle audio output.
 
-- **音频回调**：通过 `SDL_OpenAudio` 函数初始化音频设备，并设置回调函数，当音频设备需要更多数据时触发回调。
+- **Audio Callback**: Initializes the audio device using `SDL_OpenAudio` function and sets up a callback function, triggered when the audio device requires more data.
 
-### Qt 框架
+### Qt Framework
 
-Qt 是一个跨平台的 C++ 应用程序框架，用于开发具有图形用户界面的应用程序。`QVideoPlayer` 使用 Qt 来构建和管理用户界面。
+Qt is a cross-platform C++ application framework for developing applications with graphical user interfaces. `QVideoPlayer` uses Qt to build and manage the user interface.
 
-- **事件处理**：Qt 的事件系统被用来处理用户输入，如按键事件。
+- **Event Handling**: Qt's event system is used for handling user input, such as key press events.
 
-### 多线程与同步
+### Multithreading and Synchronization
 
-项目采用多线程技术来分离视频解码和播放逻辑，提高性能和响应速度。
+The project employs multithreading to separate video decoding and playback logic, enhancing performance and responsiveness.
 
-- **视频和音频队列**：使用 `BlockingQueue` 来存储解码后的音视频帧，确保线程安全的数据访问。
+- **Video and Audio Queues**: Uses `BlockingQueue` to store decoded audio and video frames, ensuring thread-safe data access.
 
-## 编译和运行
+## Compilation and Running
 
-确保你的系统已安装 Qt 6、SDL 2、FFmpeg 和 Boost C++ Libraries。
+Ensure your system has Qt 6, SDL 2, FFmpeg, and Boost C++ Libraries installed.
 
-### 编译步骤
+### Compilation Steps
 
-1. 克隆仓库：
+1. Clone the repository:
    ```
    git clone https://github.com/nagisa77/QVideoPlayer
    ```
-2. 进入项目目录：
+2. Enter the project directory:
    ```
    cd QVideoPlayer
    ```
-3. 创建并进入构建目录：
+3. Create and enter the build directory:
    ```
    mkdir build && cd build
    ```
-4. 使用 CMake 生成 Makefile：
+4. Generate Makefile using CMake:
    ```
    cmake ..
    ```
-5. 编译项目：
+5. Compile the project:
    ```
    make
    ```
 
-### 运行
+### Running
 
-在构建目录下，运行编译好的可执行文件，传递视频文件路径作为参数：
+In the build directory, run the compiled executable file, passing the path to the video file as an argument:
 ```
 ./QVideoPlayer path_to_video_file
 ```
 
-## 开发者指南
+## Developer's Guide
 
-### 项目结构
+### Project Structure
 
-- `main.c`：程序入口，设置 Qt 应用和播放器视图。
-- `video_codec.hpp/cpp`：处理视频和音频的编解码逻辑。
-- `video_player_view.hpp/cpp`：Qt 视图类，负责渲染视频帧和处理用户输入。
-- `blocking_queue.h`：线程安全的队列，用于存储解码后的帧。
-
-###
+- `main.c`: Program entry point, setting up the Qt application and player view.
+- `video_codec.hpp/cpp`: Handles the logic of video and audio codec processing.
+- `video_player_view.hpp/cpp`: Qt view class, responsible for rendering video frames and handling user inputs.
+- `blocking_queue.h`: A thread-safe queue for storing decoded frames.
