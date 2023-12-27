@@ -17,13 +17,11 @@
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/time.h>
-
-#include "video_codec_impl.h"
 }
 
-static void StaticFrameCallback(AVFrame* frame) {
+static void StaticFrameCallback(AVFramePtr frame) {
   VideoCodec& codec = VideoCodec::getInstance();
-  codec.OnFrame(frame);
+  codec.OnFrame(std::move(frame));
 }
 
 VideoCodec::VideoCodec() : fq_(100), afq_(100) {}  // 防止屯帧
@@ -59,7 +57,7 @@ void VideoCodec::StopCodec() {
   
   stream_time_base_ready_ = true; 
   
-  std::queue<AVFrame*> empty_q;
+  std::queue<AVFramePtr> empty_q;
   empty_q.push(nullptr);
   fq_.replace(empty_q);
   afq_.replace(empty_q);
@@ -74,11 +72,11 @@ void VideoCodec::StopCodec() {
   spdlog::info("StopCodec success");
 }
 
-void VideoCodec::OnFrame(AVFrame* frame) {
+void VideoCodec::OnFrame(AVFramePtr frame) {
   fq_.push(frame);
 }
 
-void VideoCodec::OnAudioFrame(AVFrame* frame) {
+void VideoCodec::OnAudioFrame(AVFramePtr frame) {
   afq_.push(frame);
 }
 
@@ -142,7 +140,7 @@ void VideoCodec::Codec(const std::string& file_path) {
   }
 
   AVPacket pkt;
-  AVFrame* frame = av_frame_alloc();
+  auto frame = createAVFramePtr();
   uint64_t idx = 0;
 
   struct timeval start, end;
@@ -151,11 +149,11 @@ void VideoCodec::Codec(const std::string& file_path) {
   while (av_read_frame(pFormatCtx, &pkt) >= 0 && !stop_requested_) {
     if (pkt.stream_index == audio_stream_index) {
       if (avcodec_send_packet(pAudioCodecCtx, &pkt) == 0) {
-        int ret = avcodec_receive_frame(pAudioCodecCtx, frame);
+        int ret = avcodec_receive_frame(pAudioCodecCtx, frame.get());
         if (ret == 0) {
-          AVFrame* frame_to_cb = av_frame_alloc();
+          auto frame_to_cb = createAVFramePtr();
 
-          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+          if (av_frame_copy_props(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
@@ -164,25 +162,24 @@ void VideoCodec::Codec(const std::string& file_path) {
           frame_to_cb->nb_samples = frame->nb_samples;
           frame_to_cb->sample_rate = frame->sample_rate;
 
-          if (av_frame_get_buffer(frame_to_cb, 32) < 0) {
-            av_frame_free(&frame_to_cb);
+          if (av_frame_get_buffer(frame_to_cb.get(), 32) < 0) {
             continue;
           }
 
-          if (av_frame_copy(frame_to_cb, frame) < 0) {
+          if (av_frame_copy(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
-          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+          if (av_frame_copy_props(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
-          OnAudioFrame(frame_to_cb);
+          OnAudioFrame(std::move(frame_to_cb));
         }
       }
     } else if (pkt.stream_index == video_stream_index) {
       if (avcodec_send_packet(pCodecCtx, &pkt) == 0) {
-        int ret = avcodec_receive_frame(pCodecCtx, frame);
+        int ret = avcodec_receive_frame(pCodecCtx, frame.get());
 
         if (ret == 0) {
           int width = frame->width;
@@ -191,9 +188,9 @@ void VideoCodec::Codec(const std::string& file_path) {
             continue;
           }
 
-          AVFrame* frame_to_cb = av_frame_alloc();
+          auto frame_to_cb = createAVFramePtr();
 
-          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+          if (av_frame_copy_props(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
@@ -202,17 +199,17 @@ void VideoCodec::Codec(const std::string& file_path) {
           frame_to_cb->width = frame->width;
           frame_to_cb->height = frame->height;
 
-          int r = av_frame_get_buffer(frame_to_cb, 32);
+          int r = av_frame_get_buffer(frame_to_cb.get(), 32);
 
-          if (av_frame_copy(frame_to_cb, frame) < 0) {
+          if (av_frame_copy(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
-          if (av_frame_copy_props(frame_to_cb, frame) < 0) {
+          if (av_frame_copy_props(frame_to_cb.get(), frame.get()) < 0) {
             continue;
           }
 
-          OnFrame(frame_to_cb);  // call back!
+          OnFrame(std::move(frame_to_cb));  // call back!
         }
       }
     }
@@ -227,11 +224,10 @@ void VideoCodec::Codec(const std::string& file_path) {
   // free
   avcodec_free_context(&pCodecCtx);
   avformat_close_input(&pFormatCtx);
-  av_frame_free(&frame);
 }
 
 void VideoCodec::ProcessFrameFromQueue() {
-  AVFrame* frame;
+  AVFramePtr frame;
   while (!stream_time_base_ready_) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
@@ -240,16 +236,14 @@ void VideoCodec::ProcessFrameFromQueue() {
     if (frame->pts != AV_NOPTS_VALUE) {
       double time = av_q2d(stream_time_base_) * frame->pts;
       if (frame->pts == 0) {
-        listener_->OnVideoFrame(frame);
-        av_frame_free(&frame);
+        listener_->OnVideoFrame(std::move(frame));
 
         continue;
       }
 
       WaitForFrameAudio(time);
 
-      listener_->OnVideoFrame(frame);
-      av_frame_free(&frame);
+      listener_->OnVideoFrame(std::move(frame));
     }
     frame = nullptr;
   }
@@ -258,7 +252,7 @@ void VideoCodec::ProcessFrameFromQueue() {
 }
 
 void VideoCodec::ProcessAudioFrameFromQueue() {
-  AVFrame* frame;
+  AVFramePtr frame;
   while (!stream_time_base_ready_) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
@@ -267,13 +261,13 @@ void VideoCodec::ProcessAudioFrameFromQueue() {
     if (frame->pts != AV_NOPTS_VALUE) {
       double time = av_q2d(audio_stream_time_base_) * frame->pts;
       if (frame->pts == 0) {
-        listener_->OnAudioFrame(frame);
+        listener_->OnAudioFrame(std::move(frame));
         continue;
       }
 
       WaitForFrame(time);
 
-      listener_->OnAudioFrame(frame);
+      listener_->OnAudioFrame(std::move(frame));
     }
     frame = nullptr; 
   }

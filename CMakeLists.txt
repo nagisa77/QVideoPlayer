@@ -42,8 +42,6 @@ add_executable(VideoPlayer
     main.cc
     video_codec.cpp
     video_codec.hpp  
-    video_codec_impl.c
-    video_codec_impl.h
     video_player_view.cpp
     video_player_view.hpp  
     blocking_queue.h

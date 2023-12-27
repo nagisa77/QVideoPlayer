@@ -34,7 +34,7 @@ void VideoPlayerView::AudioCallback(void* userdata, Uint8* stream, int len) {
     return;
   }
 
-  AVFrame* frame = *opt_frame;
+  AVFramePtr frame = *opt_frame;
 
   int64_t out_channel_layout = AV_CH_LAYOUT_STEREO;
 
@@ -97,11 +97,9 @@ void VideoPlayerView::AudioCallback(void* userdata, Uint8* stream, int len) {
   SDL_memcpy(stream, outBuffer[0], bytes_to_copy);
 
   av_freep(&outBuffer[0]);
-  
-  av_frame_free(&frame); 
 }
 
-bool VideoPlayerView::InitSdlAudio(AVFrame* frame) {
+bool VideoPlayerView::InitSdlAudio(AVFramePtr frame) {
   SDL_AudioSpec wanted_spec;
 
   wanted_spec.freq = frame->sample_rate;
@@ -143,7 +141,7 @@ bool VideoPlayerView::InitSdlAudio(AVFrame* frame) {
   return true;
 }
 
-static QImage convertToQImage(AVFrame* frame) {
+static QImage convertToQImage(AVFramePtr frame) {
   if (frame->format != AV_PIX_FMT_YUV420P &&
       frame->format != AV_PIX_FMT_YUVJ420P) {
     return QImage();
@@ -178,7 +176,7 @@ static QImage convertToQImage(AVFrame* frame) {
   return img;
 }
 
-VideoPlayerView::VideoPlayerView(const char* path) : QWidget(nullptr), audio_frames_(1000) {
+VideoPlayerView::VideoPlayerView(const char* path) : QWidget(nullptr), audio_frames_(100) {
   spdlog::info("VideoPlayerView");
 
   connect(this, &VideoPlayerView::frameReady, this,
@@ -198,12 +196,12 @@ VideoPlayerView::~VideoPlayerView() {
   VideoCodec::getInstance().UnRegister(this);
 }
 
-void VideoPlayerView::OnVideoFrame(AVFrame* frame) {
+void VideoPlayerView::OnVideoFrame(AVFramePtr frame) {
   QImage image = convertToQImage(frame);
   emit frameReady(image);
 }
 
-void VideoPlayerView::OnAudioFrame(AVFrame* frame) {
+void VideoPlayerView::OnAudioFrame(AVFramePtr frame) {
   emit audioFrameReady(frame);
 }
 
@@ -211,7 +209,7 @@ void VideoPlayerView::OnMediaError() {
   close(); 
 }
 
-void VideoPlayerView::prepareAudioFrame(AVFrame* frame) {
+void VideoPlayerView::prepareAudioFrame(AVFramePtr frame) {
   if (first_audio_frame_ && InitSdlAudio(frame)) {
     first_audio_frame_ = false;
   }

@@ -18,10 +18,24 @@ extern "C" {
 
 #include "blocking_queue.h"
 
+struct AVFrameDeleter {
+  void operator()(AVFrame* frame) const {
+    if (frame) {
+      av_frame_free(&frame);
+    }
+  }
+};
+
+using AVFramePtr = std::shared_ptr<AVFrame>;
+
+inline AVFramePtr createAVFramePtr() {
+    return AVFramePtr(av_frame_alloc(), AVFrameDeleter());
+}
+
 class VideoCodecListener {
  public:
-  virtual void OnVideoFrame(AVFrame* frame) = 0;
-  virtual void OnAudioFrame(AVFrame* frame) = 0;
+  virtual void OnVideoFrame(AVFramePtr frame) = 0;
+  virtual void OnAudioFrame(AVFramePtr frame) = 0;
   virtual void OnMediaError() = 0;
 };
 
@@ -42,8 +56,8 @@ class VideoCodec {
   void Codec(const std::string& file_path);
   void ProcessFrameFromQueue();
   void ProcessAudioFrameFromQueue();
-  void OnFrame(AVFrame* frame);
-  void OnAudioFrame(AVFrame* frame);
+  void OnFrame(AVFramePtr frame);
+  void OnAudioFrame(AVFramePtr frame);
   void WaitForFrame(double frame_time);
   void WaitForFrameAudio(double frame_time);
 
@@ -57,8 +71,8 @@ class VideoCodec {
   std::thread codec_thread_;
   std::thread getting_frame_thread_;
   std::thread getting_audio_frame_thread_;
-  BlockingQueue<AVFrame*> fq_;
-  BlockingQueue<AVFrame*> afq_;
+  BlockingQueue<AVFramePtr> fq_;
+  BlockingQueue<AVFramePtr> afq_;
   bool is_first_frame_ = true;
   int64_t first_frame_time_us_;
   bool is_first_audio_frame_ = true;

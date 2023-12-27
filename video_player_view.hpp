@@ -27,23 +27,23 @@ class VideoPlayerView : public QWidget, public VideoCodecListener {
   ~VideoPlayerView();
 
   void renderFrame(QImage frame);
-  void prepareAudioFrame(AVFrame* frame);
+  void prepareAudioFrame(AVFramePtr frame);
   void paintEvent(QPaintEvent* event) override;
   void AudioCallback(void* userdata, Uint8* stream, int len);
-  bool InitSdlAudio(AVFrame* frame);
+  bool InitSdlAudio(AVFramePtr frame);
 
  signals:
   void frameReady(QImage frame);
-  void audioFrameReady(AVFrame* frame);
+  void audioFrameReady(AVFramePtr frame);
 
  private:
-  void OnVideoFrame(AVFrame* frame) override;
-  void OnAudioFrame(AVFrame* frame) override;
+  void OnVideoFrame(AVFramePtr frame) override;
+  void OnAudioFrame(AVFramePtr frame) override;
   void OnMediaError() override;
 
  private:
   QImage current_frame_;
-  BlockingQueue<AVFrame*> audio_frames_;
+  BlockingQueue<AVFramePtr> audio_frames_;
   bool first_audio_frame_ = true;
   SDL_AudioSpec obtained_;
 };
